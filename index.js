@@ -1,30 +1,26 @@
 import app from "./app.js";
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
+import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-dotenv.config({quiet:true})
+dotenv.config({ quiet: true });
 
+mongoose.set({ strictQuery: true });
 
-mongoose.set({strictQuery:true});
+// ✅ Single mongoose connection
+let isConnected = false;
 
-
-
-try{
-
-    mongoose.connect(process.env.DATABASE)
-    console.log("connected")
-
-
-}catch(err){
-
-    console.log(err);
-    console.log("not connected")
+async function connectDB() {
+  if (isConnected) return;
+  try {
+    await mongoose.connect(process.env.DATABASE);
+    isConnected = true;
+    console.log("MongoDB connected");
+  } catch (err) {
+    console.log("MongoDB connection error:", err);
+  }
 }
 
-const port = process.env.PORT || 9000
+await connectDB(); // Vercel ke serverless environment me top-level await allowed
 
-app.listen(port,()=>{
-
-    console.log(`port is running ${port}`)
-})
-
+// ❌ app.listen(port) mat likho
+export default app; // Vercel ko serverless function ke liye export karna hai
