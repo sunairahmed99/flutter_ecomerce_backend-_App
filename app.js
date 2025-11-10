@@ -5,6 +5,9 @@ import Authrouter from './api/Routes/AuthRouter.js';
 import productRouter from './api/Routes/productRouter.js';
 import CartRouter from './api/Routes/CartRouter.js';
 import categoryRouter from './api/Routes/CategoryRouter.js';
+import AddressRouter from './api/Routes/AddressRouter.js';
+import OrderRouter from './api/Routes/OrderRouter.js';
+
 
 
 const app = express();
