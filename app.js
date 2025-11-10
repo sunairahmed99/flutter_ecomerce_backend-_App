@@ -25,6 +25,9 @@ app.use('/auth', Authrouter);
 app.use('/category', categoryRouter);
 app.use('/product', productRouter);
 app.use('/cart', CartRouter);
+app.use('/address', AddressRouter);
+app.use('/order', OrderRouter);
+app.use('/favorite', FavoriteRouter);
 
 
 
