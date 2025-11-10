@@ -7,6 +7,9 @@ import CartRouter from './api/Routes/CartRouter.js';
 import categoryRouter from './api/Routes/CategoryRouter.js';
 import AddressRouter from './api/Routes/AddressRouter.js';
 import OrderRouter from './api/Routes/OrderRouter.js';
+import FavoriteRouter from './api/Routes/FavoriteRouter.js';
+
+
 
 
 
