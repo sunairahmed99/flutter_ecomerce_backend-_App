@@ -1,5 +1,5 @@
 import express from 'express';
-import {CreateUsers, verifyUsers, loginUsers, forgotuser, resetpassuser, editprofile, editpassword, verifyuser, emailsendcontroller} from '../Controllers/Usercontroller.js';
+import {CreateUsers, verifyUsers, loginUsers, forgotuser, resetpassuser, editprofile, editpassword, verifyuser} from '../Controllers/Usercontroller.js';
 import verifieduser from '../Middleware/AuthUser.js';
 
 const userRouter = express.Router();
@@ -18,6 +18,6 @@ userRouter.post('/resetpass',resetpassuser);
 userRouter.get('/verifyuser',verifieduser,verifyuser);
 userRouter.patch('/edit/profile',verifieduser, editprofile);
 userRouter.patch('/edit/password',verifieduser,editpassword);
-userRouter.get('/orderemail',verifieduser,emailsendcontroller);
+
 
 export default userRouter

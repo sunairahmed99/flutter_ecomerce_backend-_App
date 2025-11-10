@@ -4,11 +4,6 @@ import Userss from "../Models/UserSchema.js";
 import mailer from "../../Utils/Nodemailer.js";
 
 
-
-
-
-
-
 const CreateUsers = async (req, res) => {
   try {
     const { name, email, phone, password, cpassword } = req.body;
@@ -416,62 +411,4 @@ const verifyuser = async(req,res)=>{
 }
 
 
-const emailsendcontroller = async (req, res) => {
-  try {
-    const userid = req.header("id");
-    const ordernumber = req.header("ordernumber");
-    const totalAmount = req.header("totalamount");
-    const paymentstatus = req.header('paymentstatus');
-
-    
-    const user = await Userss.findById(userid);
-    if (!user) {
-      return res.status(404).json({
-        status: "fail",
-        message: "User not found",
-      });
-    }
-
-
-    const emailData = {
-      to: user.email, 
-      subject: `Order Confirmation - #${ordernumber}`,
-      text: `
-Hey ${user.name || "Customer"},
-
-Thank you for your order!
-
-🧾 Order Number: ${ordernumber}
-💰 Total Amount: $${totalAmount}
-📅 Date: ${new Date().toLocaleString()}
-
-We’re processing your order and will notify you once it’s shipped.
-
-Regards,  
-Trustify Team
-      `,
-    };
-
-    await mailer(emailData);
-
-    return res.status(200).json({
-      status: "success",
-      message: "Order confirmation email sent successfully",
-    });
-  } catch (err) {
-    console.error("❌ Email send controller error:", err);
-    return res.status(500).json({
-      status: "fail",
-      message: "Something went wrong while sending the email",
-    });
-  }
-};
-
-
-
-
-
-
-
-
-export { CreateUsers, verifyUsers, loginUsers,forgotuser,resetpassuser,editprofile,editpassword,verifyuser,emailsendcontroller};
+export { CreateUsers, verifyUsers, loginUsers,forgotuser,resetpassuser,editprofile,editpassword,verifyuser};
