@@ -1,5 +1,5 @@
 import express from 'express';
-import {CreateUsers, verifyUsers, loginUsers, forgotuser, resetpassuser, editprofile, editpassword, verifyuser} from '../Controllers/Usercontroller.js';
+import {CreateUsers, verifyUsers, loginUsers, forgotuser, resetpassuser, editprofile, editpassword, verifyuser, googleLogin} from '../Controllers/Usercontroller.js';
 import verifieduser from '../Middleware/AuthUser.js';
 
 const userRouter = express.Router();
@@ -11,6 +11,7 @@ userRouter.post('/verify',verifyUsers);
 userRouter.post('/login',loginUsers);
 userRouter.post('/forgot',forgotuser);
 userRouter.post('/resetpass',resetpassuser);
+userRouter.post('/google', googleLogin);
 
 
 //Authenticate User Routes

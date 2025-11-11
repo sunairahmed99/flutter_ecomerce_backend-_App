@@ -1,4 +1,6 @@
 import bcrypt from "bcrypt";
+import { OAuth2Client } from 'google-auth-library';
+import fetch from 'node-fetch';
 import jwt from 'jsonwebtoken';
 import Userss from "../Models/UserSchema.js";
 import mailer from "../../Utils/Nodemailer.js";
@@ -410,5 +412,80 @@ const verifyuser = async(req,res)=>{
   }
 }
 
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID); 
 
-export { CreateUsers, verifyUsers, loginUsers,forgotuser,resetpassuser,editprofile,editpassword,verifyuser};
+const googleLogin = async (req, res) => {
+  try {
+    const { id_token, access_token } = req.body;
+    const token = id_token || access_token;
+
+    if (!token) {
+      return res.status(400).json({ message: "No token provided" });
+    }
+
+    let payload;
+
+    // Check if it's an ID token or access token
+    if (token.split('.').length === 3) {
+      // Verify ID token
+      const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: process.env.GOOGLE_CLIENT_ID, // Use your Android app's client ID
+      });
+      payload = ticket.getPayload();
+    } else {
+      // Access token verification by fetching user info
+      const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!userInfoRes.ok) throw new Error("Invalid access token");
+      payload = await userInfoRes.json();
+    }
+
+    const { sub, email, name } = payload;
+
+    // Check if the user exists in your database
+    let user = await Users.findOne({ email });
+    if (!user) {
+      user = new Users({
+        name,
+        email,
+        phone: null,
+        googleId: sub,
+        googleLoggedIn: true,
+      });
+      await user.save();
+    }
+
+    // Generate JWT for the user
+    const userJwt = jwt.sign(
+      { id: user._id, email: user.email, name: user.name },
+      process.env.JWT_KEY,
+      { expiresIn: process.env.JWT_EXPIRATION || "1h" }
+    );
+
+    // Send response with user details and token
+    res.status(200).json({
+      status: 'success',
+      data: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        phone: null,
+      },
+      token: userJwt,
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      status: 'fail',
+      message: 'Invalid Google token',
+      error: err.message,
+    });
+  }
+};
+
+
+
+export { CreateUsers, verifyUsers, loginUsers,forgotuser,resetpassuser,editprofile,editpassword,verifyuser,googleLogin};
