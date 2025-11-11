@@ -460,8 +460,8 @@ const googleLogin = async (req, res) => {
     // Generate JWT for the user
     const userJwt = jwt.sign(
       { id: user._id, email: user.email, name: user.name },
-      process.env.JWT_KEY,
-      { expiresIn: process.env.JWT_EXPIRATION || "1h" }
+      process.env.jwt_key,
+      { expiresIn: process.env.jwt_exp || "1h" }
     );
 
     // Send response with user details and token
