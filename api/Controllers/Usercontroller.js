@@ -445,9 +445,9 @@ const googleLogin = async (req, res) => {
     const { sub, email, name } = payload;
 
     // Check if the user exists in your database
-    let user = await Users.findOne({ email });
+    let user = await Userss.findOne({ email });
     if (!user) {
-      user = new Users({
+      user = new Userss({
         name,
         email,
         phone: null,
