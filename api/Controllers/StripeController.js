@@ -1,6 +1,8 @@
 import Stripe from "stripe";
 import dotenv from "dotenv";
-import mailer from "../Utils/Nodemailer.js";
+import mailer from "../../Utils/Nodemailer.js";
+
+
 
 dotenv.config();
 
