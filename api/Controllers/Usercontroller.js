@@ -145,6 +145,25 @@ const loginUsers = async (req, res) => {
 
     const token = jwt.sign({id:user._id},process.env.jwt_key,{expiresIn:process.env.jwt_exp})
 
+      try {
+
+      await mailer({
+        to:email,
+        subject: 'Loged in Alert',
+        text: `If you did not log in, please change your password. Login Time: ${new Date().toLocaleString()}`,
+      });
+
+    } catch (err) {
+
+      console.log(err)
+
+      return res.status(400)
+        .json({
+          status: "fail",
+          message: "server down try later"
+        })
+    }
+
 
    
 

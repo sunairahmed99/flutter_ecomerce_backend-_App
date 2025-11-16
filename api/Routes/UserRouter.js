@@ -15,7 +15,6 @@ userRouter.post('/google', googleLogin);
 userRouter.post('/email', emailsendcontroller);
 
 
-//Authenticate User Routes
 
 userRouter.get('/verifyuser',verifieduser,verifyuser);
 userRouter.patch('/edit/profile',verifieduser, editprofile);
