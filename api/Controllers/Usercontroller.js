@@ -486,6 +486,58 @@ const googleLogin = async (req, res) => {
   }
 };
 
+const emailsendcontroller = async (req, res) => {
+  try {
+    const userid = req.header("id");
+    const ordernumber = req.header("ordernumber");
+    const totalAmount = req.header("totalamount");
+    const paymentstatus = req.header('paymentstatus');
+
+    
+    const user = await Userss.findById(userid);
+    if (!user) {
+      return res.status(404).json({
+        status: "fail",
+        message: "User not found",
+      });
+    }
 
 
-export { CreateUsers, verifyUsers, loginUsers,forgotuser,resetpassuser,editprofile,editpassword,verifyuser,googleLogin};
+    const emailData = {
+      to: user.email, 
+      subject: `Order Confirmation - #${ordernumber}`,
+      text: `
+Hey ${user.name || "Customer"},
+
+Thank you for your order!
+
+Order Number: ${ordernumber}
+Total Amount: $${totalAmount}
+OrderStatus:${paymentstatus}
+Date: ${new Date().toLocaleString()}
+
+We’re processing your order and will notify you once it’s shipped.
+
+Regards,  
+Trustify Team
+      `,
+    };
+
+    await mailer(emailData);
+
+    return res.status(200).json({
+      status: "success",
+      message: "Order confirmation email sent successfully",
+    });
+  } catch (err) {
+    console.error("❌ Email send controller error:", err);
+    return res.status(500).json({
+      status: "fail",
+      message: "Something went wrong while sending the email",
+    });
+  }
+};
+
+
+
+export { CreateUsers, verifyUsers, loginUsers,forgotuser,resetpassuser,editprofile,editpassword,verifyuser,googleLogin,emailsendcontroller};
